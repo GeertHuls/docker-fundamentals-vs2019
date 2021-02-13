@@ -12,6 +12,8 @@ namespace Globomantics.Core.Pages
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
+
+            var t = "sfsfffd";
         }
 
         public void OnGet()
