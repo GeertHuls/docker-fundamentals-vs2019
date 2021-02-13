@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  globomantics.identityserver:
+    image: ${DOCKER_REGISTRY-}globomanticsidentityserver
+    build:
+      context: .
+      dockerfile: Globomantics.IdentityServer/Dockerfile
