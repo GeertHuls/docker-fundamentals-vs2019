@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.7'
 
 services:
   globomantics.identityserver:
@@ -6,3 +6,7 @@ services:
     build:
       context: .
       dockerfile: Globomantics.IdentityServer/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://*:5000
+    ports:
+      - "5000:5000"
