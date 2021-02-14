@@ -52,7 +52,13 @@
                 </div>
 
                 <div class="card-body">
-                    <a href="/Identity/Account/Register?ReturnUrl=@Uri.EscapeDataString(Model.ReturnUrl)" class="btn btn-info btn-block">Register a new Account</a>
+                    <p>
+                        <a id="forgot-password" href="/Identity/Account/ForgotPassword">Forgot your password?</a>
+                    </p>
+
+                    <p>
+                        <a href="/Identity/Account/Register?ReturnUrl=@Uri.EscapeDataString(Model.ReturnUrl)" class="btn btn-info btn-block">Register a new Account</a>
+                    </p>
                 </div>
             </div>
         </div>
