@@ -4,7 +4,6 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>babd7a0a-acb0-4776-9bad-29c530212200</ProjectGuid>
-    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/.well-known/openid-configuration</DockerServiceUrl>
     <DockerServiceName>globomantics.identityserver</DockerServiceName>
   </PropertyGroup>
