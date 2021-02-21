@@ -2,6 +2,9 @@
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
+COPY nginx/id-local.crt /usr/local/share/ca-certificates/id-local.crt
+COPY nginx/www-local.crt /usr/local/share/ca-certificates/www-local.crt
+RUN update-ca-certificates
 EXPOSE 80
 EXPOSE 443
 
