@@ -2,6 +2,7 @@ using System.Linq;
 using Globomantics.Api.Extenstions;
 using Globomantics.Api.Middleware;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,30 +47,38 @@ namespace Globomantics.Api
 
         public void Configure(IApplicationBuilder app, IApiVersionDescriptionProvider provider)
         {
-            app.UseApiExceptionHandler();  // defined locally
-
-            var corsOrigins = Configuration.GetValue<string>("CORSOrigins").Split(",");
-            if (corsOrigins.Any())
+            var virtualPath = "/api";
+            app.Map(virtualPath, builder =>
             {
-                app.UseCors(builder => builder
-                    .WithOrigins(corsOrigins)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-            }
+                builder.UseApiExceptionHandler();  // defined locally
 
-            app
-                .UseSwaggerDocumentation(Configuration, provider)
-                .UseHsts()
-                .UseHttpsRedirection()
-                .UseAuthentication()
-                .UseGlobomanticsStyleRequestLogging()
-                .UseRouting();
+                // We have similar but not exactly the same code that applies the forwarded HTTP headers.
+                // Note that we're not clearing known networks and proxies here, that's important to help
+                // swashbuckle to work properly.
+                builder.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                });
 
-            app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers().RequireAuthorization();
-                endpoints.MapHealthChecks("/health");
+                var corsOrigins = Configuration.GetValue<string>("CORSOrigins").Split(",");
+                if (corsOrigins.Any())
+                {
+                    builder.UseCors(builder => builder
+                        .WithOrigins(corsOrigins)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+                }
+
+                builder.UseSwaggerDocumentation(virtualPath, Configuration, provider);
+                builder.UseAuthentication();
+                builder.UseGlobomanticsStyleRequestLogging();
+                builder.UseRouting();
+                builder.UseAuthorization();
+                builder.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers().RequireAuthorization();
+                    endpoints.MapHealthChecks("/health");
+                });
             });
         }
     }
