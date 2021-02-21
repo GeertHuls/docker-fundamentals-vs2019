@@ -175,7 +175,18 @@ WHERE UserId = @UserId",
             {
                 throw new ArgumentNullException(nameof(normalizedUserName));
             }
-            
+
+            if (string.Equals(normalizedUserName, "kim@mars.com", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return new CustomUser
+                {
+                    LoginName = "kim@mars.com",
+                    Email = "kim@mars.com",
+                    PasswordHash = "AQAAAEEE...",
+                    EmailConfirmed = true
+                };
+            }
+
             if (string.Equals(normalizedUserName, "stanley@mars.com", StringComparison.InvariantCultureIgnoreCase))
             {
                 return new CustomUser
