@@ -1,9 +1,3 @@
-using System;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Globomantics.Core.Authorization;
 using Globomantics.Core.Services;
 using IdentityModel;
@@ -13,11 +7,18 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System;
+using System.Data;
+using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Globomantics.Core
 {
@@ -114,6 +115,15 @@ namespace Globomantics.Core
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseExceptionHandler("/Error");
+
+            // Http header forwarded from nginx:
+            var forwardedHeaderOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            forwardedHeaderOptions.KnownNetworks.Clear();
+            forwardedHeaderOptions.KnownProxies.Clear();
+            app.UseForwardedHeaders(forwardedHeaderOptions);
 
             app.UseHsts();
             app.UseHttpsRedirection();
