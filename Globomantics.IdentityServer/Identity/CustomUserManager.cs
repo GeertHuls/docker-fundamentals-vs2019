@@ -33,11 +33,6 @@ namespace Globomantics.IdentityServer.Identity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (user.Email.Equals("kim@mars.com", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return IdentityResult.Success;
-            }
-
             // If this puts the user over the threshold for lockout,
             // lock them out and reset the access failed count
             var count = await store.IncrementAccessFailedCountAsync(user, CancellationToken);
