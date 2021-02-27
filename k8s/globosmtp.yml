@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: globosmtp
+spec:
+  selector:
+    matchLabels:
+      app: globosmtp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: globosmtp
+    spec:      
+      containers:
+      - name: stmp4dev
+        image: rnwood/smtp4dev:latest  
+        env:
+          - name: ServerOptions__BasePath
+            value: "/mail"      
+        ports:
+        - containerPort: 80
+        - containerPort: 25
+        - containerPort: 143  
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "200m"  
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: globomail-service
+spec:
+  selector:
+    app: globosmtp  
+  type: NodePort  
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+# since this service has no nodeport specified,
+# one will get auto assigned in the 31000 range
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: globosmtp-service
+spec:
+  clusterIP: None # headless service
+  selector:
+    app: globosmtp
+  ports:
+    - protocol: TCP
+      port: 25
+      targetPort: 25
+# we don't need to access the smtp port (port 25) outside the cluster
+# that's why this is a headless service
+# application inside the cluster that are sending emails can
+# refer to this service, which will hit the global SMTP pod on port 25
+# but this service will not be available outside the cluster.
