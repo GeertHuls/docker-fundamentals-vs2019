@@ -35,13 +35,13 @@ metadata:
 spec:
   selector:
     app: globosmtp  
-  type: NodePort  
+  type: ClusterIP  
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
 
-# since this service has no nodeport specified,
+# if the type would be of type NodePort and no nodeport is specified,
 # one will get auto assigned in the 31000 range
 
 ---

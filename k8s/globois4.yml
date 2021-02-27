@@ -51,10 +51,11 @@ metadata:
 spec:
   selector:
     app: globomantics-identity  
-  type: NodePort  
+  type: ClusterIP
   ports:
-    - protocol: TCP 
+    - protocol: TCP
       port: 5000
       targetPort: 5000
-      nodePort: 31500
-# will be available on http://localhost:31500
+      # nodePort: 31500 
+
+# will be available on http://localhost:31500 --> if the node port was enabled!

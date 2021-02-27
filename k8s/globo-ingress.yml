@@ -3,6 +3,14 @@ kind: Ingress # type is ingress
 metadata:
   name: globo-ingress  
 spec:
+  tls: # specify the host for the TLS entry and then provide
+       # the name of a secret that we'll define that includes the
+       # certificate information. That should enable HTTPS for this site.
+       # to create a TLS secret, use the kubectl:
+       # kubectl create secret tls idlocal-tls --key="id-local.key" --cert="id-local.crt"
+  - hosts:
+      - id.local.com
+    secretName: idlocal-tls  
   rules:
   - host: seq.local.com # will look for requests on this host
     http:
@@ -14,5 +22,22 @@ spec:
             name: globoseq-service # and then route all requests to the globoseq service
             port:
               number: 80
-
-# This endpoint will be accessable on http://seq.local.com
+# This endpoint will be accessible on http://seq.local.com
+  - host: id.local.com # the host is id.local.com
+    http:
+      paths:
+      - pathType: Prefix # the mail prefix is being used to route traffic to the mail service
+        path: /mail/ # traffic is routed to the http://id.local.com/mail endpoint
+        backend:
+          service:
+            name: globomail-service
+            port:
+              number: 80
+      - pathType: Prefix
+        path: / # here trafifc is routed the the default path: http://id.local.com
+        backend:
+          service:
+            name: globois4-service
+            port:
+              number: 5000
+# This endpoint will be accessible on http://id.local.com
