@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: globo-identity-config
+data: # these will become environment variables in the container:
+      # these match up with appsettings.json values with the
+      # double underscore in place of a colon.
+  Email__SmtpServer: globosmtp-service
+  Email__SenderAddress: notlistening@globomantics.com 
+
+# add the secret via the kubectl:
+
+# kubectl create secret generic globoconn-secrets --from-literal=ConnectionStrings__IS4DbConnection="Server=globosql;Database=GlobomanticsIdSrv;User Id=sa;Password=Sqlc0ntainersFTW!;MultipleActiveResultSets=true" --from-literal=ConnectionStrings__GlobomanticsDb="Server=globosql;Database=GlobomanticsIdSrv;User Id=sa;Password=Sqlc0ntainersFTW!;MultipleActiveResultSets=true"
+
+# usesually these secrets are created in a CD pipeline step.
