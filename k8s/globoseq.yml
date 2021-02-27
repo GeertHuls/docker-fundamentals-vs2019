@@ -29,12 +29,13 @@ metadata:
 spec:
   selector:
     app: globoseq-app  
-  type: NodePort  
+  type: ClusterIP # cluster ip are not exposed outside cluster  
   ports:
     - protocol: TCP 
       port: 80
       targetPort: 80
-      nodePort: 31534
+      # nodePort: 31534 # a nodeport is not applicable anymore because
+                        # it isn't exposed outside the cluster anymore
 
 # service will be available on http://localhost:31534
 # if no node port is specified, some will get auto assinged

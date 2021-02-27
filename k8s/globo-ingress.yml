@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress # type is ingress
+metadata:
+  name: globo-ingress  
+spec:
+  rules:
+  - host: seq.local.com # will look for requests on this host
+    http:
+      paths:      
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: globoseq-service # and then route all requests to the globoseq service
+            port:
+              number: 80
+
+# This endpoint will be accessable on http://seq.local.com
